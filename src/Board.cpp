@@ -7,10 +7,6 @@ Board::Board(sf::RenderWindow& _window) : window(_window)
     current_turn = 0;
 }
 
-void Board::update()
-{
-
-}
 
 void Board::init()
 {
@@ -89,11 +85,11 @@ void Board::init()
     current_turn = 0;
 }
 
-void Board::mouseButtonPressed(const sf::Event::MouseButtonPressed* event)
+void Board::mouseButtonPressed(const sf::Event::MouseButtonPressed* event, int player)
 {
     if (hover_tile != nullptr && hover_tile->getPiece() != nullptr)
     {
-        if (hover_tile->getPiece()->getPlayerID() == current_turn)
+        if (hover_tile->getPiece()->getPlayerID() == current_turn && player == current_turn)
         {
             hover_tile->clicked(event, held_piece);
         }
@@ -127,6 +123,11 @@ void Board::mouseButtonReleased(const sf::Event::MouseButtonReleased* event)
                 std::cout << "Piece moved from (" << piece->getOrigin().x << "," << piece->getOrigin().y
                     << ") to (" << piece->getDestination().x << "," << piece->getDestination().y << ")." << std::endl;
                 //If the piece has been placed, and it's not where it came from, end the turn
+
+                Move new_move;
+                new_move.origin = piece->getOrigin();
+                new_move.destination = piece->getDestination();
+                moves.emplace_back(new_move);
                 endTurn();
             }
         }
@@ -209,6 +210,17 @@ void Board::render()
     }
 }
 
+std::vector<Move> Board::update()
+{
+    std::vector<Move> to_send;
+    if(!moves.empty())
+    {
+        to_send.emplace_back(moves.back());
+        moves.clear();
+    }
+    return to_send;
+}
+
 void Board::endTurn()
 {
     current_turn++;
@@ -216,4 +228,12 @@ void Board::endTurn()
     {
         current_turn = 0;
     }
+}
+
+void Board::moveByCoords(sf::Vector2i _origin, sf::Vector2i _destination)
+{
+    Tile& _tile = *grid[_destination.x + (_destination.y * grid_size.x)];
+    grid[_origin.x + (_origin.y * grid_size.x)].get()->movePiece(_tile);
+    endTurn();
+    std::cout << "Hi";
 }

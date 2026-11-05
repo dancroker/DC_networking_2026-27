@@ -1,6 +1,6 @@
 #include "Server.h"
 
-Server::Server()
+Server::Server(std::shared_ptr<Board> _board) : board(_board)
 {
 }
 
@@ -63,12 +63,15 @@ void Server::listen(sf::TcpSocket& c_socket)
 {
 	bool continue_receving = true;
 
-	char data[1028];
+	//char data[1028];
+	sf::Packet packet;
+
 	std::size_t recieved;
 
 	while(continue_receving)
 	{
-		sf::Socket::Status status = c_socket.receive(data, 1028, recieved);
+		//sf::Socket::Status status = c_socket.receive(data, 1028, recieved);
+		sf::Socket::Status status = c_socket.receive(packet);
 
 		if(status == sf::Socket::Status::Disconnected)
 		{
@@ -76,10 +79,24 @@ void Server::listen(sf::TcpSocket& c_socket)
 			std::cout << "dissconnected" << std::endl;
 		}
 
-		if (recieved < 1028) { data[recieved] = '\0'; }
-		relay(data, c_socket);
 
-		std::cout << reinterpret_cast<char*>(data) << std::endl;
+		//if (recieved < 1028) { data[recieved] = '\0'; }
+		relay(packet, c_socket);
+
+		std::string string;
+		sf::Vector2i origin;
+		sf::Vector2i destination;
+
+		unpackData(packet, string, origin, destination);
+
+		if (string.length() > 0)
+		{
+			std::cout << string << std::endl;
+		}
+		if (origin.x >= 0 && destination.x >= 0)
+		{
+			board->moveByCoords(origin, destination);
+		}
 	}
 	c_socket.disconnect();
 }
@@ -92,17 +109,39 @@ void Server::input()
 		std::getline(std::cin, str);
 		std::cin.clear();
 
+		sf::Packet packet;
+		packet = packData(str.data());
+
 		std::lock_guard<std::mutex> lck(mutex);
 		for(std::unique_ptr<sf::TcpSocket>& connection : connections)
 		{
-			connection->send(reinterpret_cast<char*>(str.data()), str.length());
+			connection->send(packet);
 		}
 	}
 }
 
-void Server::relay(std::string buffer, sf::TcpSocket& c_socket)
+void Server::input(sf::Packet _packet)
 {
-	char* message = reinterpret_cast<char*>(buffer.data());
+
+		sf::Packet packet;
+		packet = _packet;
+
+		std::lock_guard<std::mutex> lck(mutex);
+		for (std::unique_ptr<sf::TcpSocket>& connection : connections)
+		{
+			connection->send(packet);
+		}
+}
+
+void Server::relay(sf::Packet buffer, sf::TcpSocket& c_socket)
+{
+	//char* message = reinterpret_cast<char*>(buffer.data());
+	std::string string;
+	sf::Vector2i origin;
+	sf::Vector2i destination;
+
+	unpackData(buffer, string, origin, destination);
+
 
 	std::lock_guard<std::mutex> lck(mutex);
 
@@ -110,7 +149,20 @@ void Server::relay(std::string buffer, sf::TcpSocket& c_socket)
 	{
 		if(connection->getRemotePort() != c_socket.getRemotePort())
 		{
-			connection->send(message, buffer.size());
+			connection->send(buffer);
+			//connection->send(buffer, buffer.size());
 		}
 	}
+}
+
+sf::Packet Server::packData(std::string _string, sf::Vector2i _origin, sf::Vector2i _destination) const
+{
+	sf::Packet packet;
+	packet << _string << _origin.x << _origin.y << _destination.x << _destination.y;
+	return packet;
+}
+
+void Server::unpackData(sf::Packet _packet, std::string& _string, sf::Vector2i& _origin, sf::Vector2i& _destination)
+{
+	_packet >> _string >> _origin.x >> _origin.y >> _destination.x >> _destination.y;
 }

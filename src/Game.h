@@ -32,12 +32,18 @@ class Game
 	std::unique_ptr<sf::Text> host_text;
 	std::unique_ptr<sf::Text> join_text;
 
+	std::unique_ptr<sf::Text> Fox_text;
+	std::unique_ptr<sf::Text> Hound_text;
+	std::unique_ptr<sf::Text> Player_text;
+
 	enum
 	{
 		MENU,
+		SELECTPLAYER,
 		GAME,
 	};
 	int game_state = MENU;
-
+	int player_selected = 0;
+	bool is_selecting = false;
 };
 

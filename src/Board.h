@@ -10,17 +10,25 @@ enum Colour // This ordering is important!
 	BLACK
 };
 
+struct Move 
+{
+public:
+	sf::Vector2i origin;
+	sf::Vector2i destination;
+};
+
 class Board
 {
 public:
 	Board(sf::RenderWindow& _window);
 	void init();
 	void render();
-	void update();
-	void mouseButtonPressed(const sf::Event::MouseButtonPressed* event);
+	std::vector<Move> update();
+	void mouseButtonPressed(const sf::Event::MouseButtonPressed* event, int player);
 	void mouseButtonReleased(const sf::Event::MouseButtonReleased* event);
 	void mouseMoved(const sf::Event::MouseMoved* event);
 	void endTurn();
+	void moveByCoords(sf::Vector2i _origin, sf::Vector2i _destination);
 
 private:
 	sf::RenderWindow& window;
@@ -49,4 +57,6 @@ private:
 	std::shared_ptr<Tile> hover_tile = nullptr;
 
 	int current_turn;
+
+	std::vector<Move> moves;
 };
