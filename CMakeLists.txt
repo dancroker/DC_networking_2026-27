@@ -20,7 +20,7 @@ FetchContent_MakeAvailable(SFML)    # Makes sure SFML and its dependencies are a
 set(SOURCE_FILES src/main.cpp src/Game.cpp src/Game.h "src/Tile.h" "src/Tile.cpp" "src/Piece.h" "src/Piece.cpp" "src/Player.h" "src/Player.cpp" "src/Board.h" "src/Board.cpp")  
 
 # Name the application and tells compiler which source files to use (using SOURCE_FILES variable created above)
-add_executable(NETWORK_fox_n_hounds ${SOURCE_FILES})  
+add_executable(NETWORK_fox_n_hounds ${SOURCE_FILES} "src/Server.h" "src/Server.cpp" "src/Client.h" "src/Client.cpp")  
 
 target_link_libraries(NETWORK_fox_n_hounds PRIVATE SFML::Graphics SFML::Window SFML::System SFML::Network SFML::Audio) # Links the SFML libraries we need to our application
 target_compile_features(NETWORK_fox_n_hounds PRIVATE cxx_std_20)  # Defines which standard of C++ the compiler should use
