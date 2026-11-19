@@ -30,7 +30,8 @@ void Client::input()
 	while(running)
 	{
 		std::string str;
-		std::getline(std::cin, str);
+		std::istream& test = std::getline(std::cin, str);
+		test.get(); //text editor event sfml
 		std::cin.clear();
 
 		sf::Packet packet;
@@ -63,7 +64,6 @@ void Client::run()
 	std::thread connection_thread([&] {
 		while (running)
 		{
-			//char static_buffer[1028];
 			sf::Packet packet;
 
 			while (connected)
