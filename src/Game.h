@@ -19,6 +19,9 @@ class Game
 	void keyPressed(const sf::Event::KeyPressed* event);
 	void keyReleased(const sf::Event::KeyReleased* event);
 	void mouseMoved(const sf::Event::MouseMoved* event);
+	void setPlayerInput(std::string _text) { playerInput = _text; };
+	void addToPlayerInput(char _text) { playerInput += _text; };
+	std::string getPlayerInput() { return playerInput; };
 
  private:
 	sf::RenderWindow& window;
@@ -35,6 +38,10 @@ class Game
 	std::unique_ptr<sf::Text> Fox_text;
 	std::unique_ptr<sf::Text> Hound_text;
 	std::unique_ptr<sf::Text> Player_text;
+
+	std::unique_ptr<sf::Text> PlayerInput_text;
+
+	std::string playerInput;
 
 	enum
 	{

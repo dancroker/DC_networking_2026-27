@@ -66,6 +66,15 @@ int main()
         {
             game.mouseButtonReleased(mouseButtonReleased);
         }
+        if (event->is<sf::Event::TextEntered>())
+        {
+            auto text = event->getIf<sf::Event::TextEntered>();
+            if(text->unicode < 128)
+            {
+                game.addToPlayerInput(static_cast<char>(text->unicode));
+            }
+
+        }
     }
 
 

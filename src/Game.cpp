@@ -41,6 +41,9 @@ bool Game::init()
     Player_text->setString("VOID!");
     Player_text->setPosition({ 1000,400 });
         
+    PlayerInput_text = std::make_unique<sf::Text>(*font);
+    PlayerInput_text->setString("VOID!");
+    PlayerInput_text->setPosition({ 820,300 });
     return true;
 }
 
@@ -60,6 +63,15 @@ void Game::update(float dt)
             client->input(packet);
         }
     }
+    if (getPlayerInput().length() > 0)
+    {
+        sf::String text = getPlayerInput();
+        PlayerInput_text->setString(text);
+    }
+    else
+    {
+        PlayerInput_text->setString("Enter Text...");
+    }
 }
 
 void Game::render()
@@ -70,6 +82,8 @@ void Game::render()
         window.draw(*host_text);
         window.draw(*join_text);
 
+        window.draw(*PlayerInput_text);
+
         if(player_selected == 1)
         {
             Player_text->setString("Fox");
@@ -79,23 +93,7 @@ void Game::render()
             Player_text->setString("Hound");
         }
     }
-    //if (game_state == SELECTPLAYER)
-    //{
-    //    if (is_selecting)
-    //    {
-    //        Fox_text->setString("Play Fox");
-    //        Hound_text->setString("Play Hound");
-    //        window.draw(*Hound_text);
-    //        window.draw(*Fox_text);
-    //    }
-    //    else 
-    //    {
-    //        Fox_text->setString("Wait For Character Select");
-    //        Hound_text->setString("Wait For Character Select");
-    //        window.draw(*Hound_text);
-    //        window.draw(*Fox_text);
-    //    }
-    //}
+    //std::cout << getPlayerInput() << std::endl;
 
 }
 
@@ -152,7 +150,15 @@ void Game::mouseButtonReleased(const sf::Event::MouseButtonReleased* event)
 
 void Game::keyPressed(const sf::Event::KeyPressed* event)
 {
+    if (event->scancode == sf::Keyboard::Scancode::Delete) // backspace dont work?!
+    {
+        if (getPlayerInput().length() > 0) 
+        {
+            //st = myString.substr(0, myString.size() - 1);
 
+            setPlayerInput(getPlayerInput().substr(0, getPlayerInput().size() - 1));
+        }
+    }
 }
 
 void Game::keyReleased(const sf::Event::KeyReleased* event)

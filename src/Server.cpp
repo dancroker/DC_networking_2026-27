@@ -106,8 +106,8 @@ void Server::input()
 	while (running)
 	{
 		std::string str;
-		std::getline(std::cin, str);
-		std::cin.clear();
+		//std::getline(std::cin, str);
+		//std::cin.clear();
 
 		sf::Packet packet;
 		packet = packData(str.data());
