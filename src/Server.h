@@ -16,7 +16,7 @@ public:
 	void init();
 	void run();
 	void listen(sf::TcpSocket& c_socket);
-	void input();
+	void input(std::string str);
 	void input(sf::Packet _packet);
 	void relay(sf::Packet buffer, sf::TcpSocket& c_socket);
 
@@ -37,4 +37,6 @@ private:
 	std::mutex mutex;
 
 	std::shared_ptr<Board> board;
+
+
 };

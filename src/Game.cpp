@@ -82,7 +82,7 @@ void Game::render()
         window.draw(*host_text);
         window.draw(*join_text);
 
-        window.draw(*PlayerInput_text);
+        
 
         if(player_selected == 1)
         {
@@ -94,6 +94,7 @@ void Game::render()
         }
     }
     //std::cout << getPlayerInput() << std::endl;
+    window.draw(*PlayerInput_text);
 
 }
 
@@ -157,6 +158,15 @@ void Game::keyPressed(const sf::Event::KeyPressed* event)
             //st = myString.substr(0, myString.size() - 1);
 
             setPlayerInput(getPlayerInput().substr(0, getPlayerInput().size() - 1));
+        }
+    }
+    if (event->scancode == sf::Keyboard::Scancode::Enter) // backspace dont work?!
+    {
+        if(server != nullptr)
+        {
+
+            server->input(playerInput);
+            setPlayerInput("");
         }
     }
 }

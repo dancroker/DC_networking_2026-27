@@ -23,8 +23,8 @@ void Server::init()
 
 void Server::run()
 {
-	std::thread input_thread([&] {input();});
-	input_thread.detach();
+	//std::thread input_thread([&] {input();});
+	//input_thread.detach();
 
 	std::thread connections_thread([&] {
 		while (running)
@@ -101,11 +101,8 @@ void Server::listen(sf::TcpSocket& c_socket)
 	c_socket.disconnect();
 }
 
-void Server::input()
+void Server::input(std::string str)
 {
-	while (running)
-	{
-		std::string str;
 		//std::getline(std::cin, str);
 		//std::cin.clear();
 
@@ -117,7 +114,6 @@ void Server::input()
 		{
 			connection->send(packet);
 		}
-	}
 }
 
 void Server::input(sf::Packet _packet)
