@@ -27,6 +27,8 @@ public:
 
 	void unpackData(sf::Packet _packet, std::string& _string, sf::Vector2i& _origin, sf::Vector2i& _destination);
 
+	std::string getTextRecivedFromServer();
+
 private:
 	std::vector<std::thread> workers;
 	std::vector<std::unique_ptr<sf::TcpSocket>> connections;
@@ -37,6 +39,8 @@ private:
 	std::mutex mutex;
 
 	std::shared_ptr<Board> board;
+
+	textRecived text_recieved;
 
 
 };

@@ -3,6 +3,14 @@
 #include <vector>
 #include "Tile.h"
 #include "Player.h"
+#include <mutex>
+
+struct textRecived // For Server and client only, one place they both connect.
+{
+public:
+	std::mutex mutex;
+	std::string text;
+};
 
 enum Colour // This ordering is important!
 {

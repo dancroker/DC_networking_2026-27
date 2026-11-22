@@ -76,6 +76,8 @@ void Client::run()
 					//if (recived < 1028) static_buffer[recived] = '\0';
 					//std::cout << static_buffer << std::endl;
 
+					text_recieved.mutex.lock();
+
 					std::string string;
 					sf::Vector2i origin;
 					sf::Vector2i destination;
@@ -85,11 +87,14 @@ void Client::run()
 					if(string.length() > 0)
 					{
 						std::cout << string << std::endl;
+						text_recieved.text = string;
 					}
 					if(origin.x >= 0 && destination.x >= 0)
 					{
 						board->moveByCoords(origin, destination);
 					}
+
+					text_recieved.mutex.unlock();
 					
 				}
 			}
@@ -108,4 +113,20 @@ sf::Packet Client::packData(std::string _string, sf::Vector2i _origin, sf::Vecto
 void Client::unpackData(sf::Packet _packet, std::string& _string, sf::Vector2i& _origin, sf::Vector2i& _destination)
 {
 	_packet >> _string >> _origin.x >> _origin.y >> _destination.x >> _destination.y;
+}
+
+std::string Client::getTextRecivedFromServer()
+{
+	std::string text;
+	if (text_recieved.mutex.try_lock())
+	{
+		text = text_recieved.text;
+		text_recieved.text = "";
+		text_recieved.mutex.unlock();
+	}
+	else
+	{
+		text = "";
+	}
+	return text;
 }

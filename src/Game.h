@@ -39,6 +39,9 @@ class Game
 	std::unique_ptr<sf::Text> Hound_text;
 	std::unique_ptr<sf::Text> Player_text;
 
+	std::vector<std::string> chat_text_lines;
+	std::unique_ptr<sf::Text> Chat_text;
+
 	std::unique_ptr<sf::Text> PlayerInput_text;
 
 	std::unique_ptr<sf::RectangleShape> ChatBox_Rect;

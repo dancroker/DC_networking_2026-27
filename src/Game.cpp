@@ -40,6 +40,10 @@ bool Game::init()
     Player_text = std::make_unique<sf::Text>(*font);
     Player_text->setString("VOID!");
     Player_text->setPosition({ 1000,400 });
+
+    Chat_text = std::make_unique<sf::Text>(*font);
+    Chat_text->setString("VOID!");
+    Chat_text->setPosition({ 820.0,20.0 });
         
     PlayerInput_text = std::make_unique<sf::Text>(*font);
     PlayerInput_text->setString("VOID!");
@@ -78,6 +82,33 @@ void Game::update(float dt)
     {
         PlayerInput_text->setString("Enter Text...");
     }
+
+    if (client != nullptr) 
+    {
+        std::string responce = client->getTextRecivedFromServer();
+        if (responce != "")
+        {
+            std::string new_line = "Svr: " + responce;
+            chat_text_lines.push_back(new_line);
+        }
+    }
+    if (server != nullptr)
+    {
+        std::string responce = server->getTextRecivedFromServer();
+        if (responce != "")
+        {
+            std::string new_line = "Cli: " + responce;
+            chat_text_lines.push_back(new_line);
+        }
+    }
+
+    Chat_text->setString("");
+    for(std::string line : chat_text_lines)
+    {
+        std::string new_line;
+        new_line = Chat_text->getString() + line + "\n";
+        Chat_text->setString(new_line);
+    }
 }
 
 void Game::render()
@@ -102,6 +133,7 @@ void Game::render()
     //std::cout << getPlayerInput() << std::endl;
     window.draw(*ChatBox_Rect);
     window.draw(*PlayerInput_text);
+    window.draw(*Chat_text);
     
 
 }
@@ -171,13 +203,15 @@ void Game::keyPressed(const sf::Event::KeyPressed* event)
     {
         if(server != nullptr)
         {
-
+            std::string new_line = "Svr: " + playerInput;
+            chat_text_lines.push_back(new_line);
             server->input(playerInput);
             setPlayerInput("");
         }
         else if (client != nullptr)
         {
-
+            std::string new_line = "Cli: " + playerInput;
+            chat_text_lines.push_back(new_line);
             client->input(playerInput);
             setPlayerInput("");
         }
