@@ -22,7 +22,7 @@ bool Game::init()
     font = std::make_unique<sf::Font>("../Data/Fonts/OpenSans-Bold.ttf");
     host_text = std::make_unique<sf::Text>(*font);
     host_text->setString("Host Game");
-    host_text->setPosition({ 1000,400 });
+    host_text->setPosition({ 1000,600 });
    
     join_text = std::make_unique<sf::Text>(*font);
     join_text->setString("Join Game");
@@ -43,7 +43,13 @@ bool Game::init()
         
     PlayerInput_text = std::make_unique<sf::Text>(*font);
     PlayerInput_text->setString("VOID!");
-    PlayerInput_text->setPosition({ 820,300 });
+    PlayerInput_text->setPosition({ 820,380 });
+
+
+
+    ChatBox_Rect = std::make_unique<sf::RectangleShape>(sf::Vector2f{ 515,400 });
+    ChatBox_Rect->setFillColor(sf::Color{ 50,50,50 });
+    ChatBox_Rect->setPosition({ 820.0, 20.0 });
     return true;
 }
 
@@ -94,7 +100,9 @@ void Game::render()
         }
     }
     //std::cout << getPlayerInput() << std::endl;
+    window.draw(*ChatBox_Rect);
     window.draw(*PlayerInput_text);
+    
 
 }
 
@@ -155,7 +163,6 @@ void Game::keyPressed(const sf::Event::KeyPressed* event)
     {
         if (getPlayerInput().length() > 0) 
         {
-            //st = myString.substr(0, myString.size() - 1);
 
             setPlayerInput(getPlayerInput().substr(0, getPlayerInput().size() - 1));
         }
@@ -166,6 +173,16 @@ void Game::keyPressed(const sf::Event::KeyPressed* event)
         {
 
             server->input(playerInput);
+            setPlayerInput("");
+        }
+        else if (client != nullptr)
+        {
+
+            client->input(playerInput);
+            setPlayerInput("");
+        }
+        else
+        {
             setPlayerInput("");
         }
     }

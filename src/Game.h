@@ -41,6 +41,10 @@ class Game
 
 	std::unique_ptr<sf::Text> PlayerInput_text;
 
+	std::unique_ptr<sf::RectangleShape> ChatBox_Rect;
+	std::unique_ptr<sf::RectangleShape> ChatBox_MoveUp_Rect;
+	std::unique_ptr<sf::RectangleShape> ChatBox_MoveDown_Rect;
+
 	std::string playerInput;
 
 	enum

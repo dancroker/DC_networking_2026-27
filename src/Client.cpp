@@ -25,22 +25,16 @@ void Client::connect()
 	}
 }
 
-void Client::input()
+void Client::input(std::string str)
 {
-	while(running)
+
+	sf::Packet packet;
+	packet = packData(str.data());
+
+
+	if (connected)
 	{
-		std::string str;
-		std::istream& test = std::getline(std::cin, str);
-		test.get(); //text editor event sfml
-		std::cin.clear();
-
-		sf::Packet packet;
-		packet = packData(str.data());
-
-		if (connected) 
-		{
-			socket->send(packet);
-		}
+		socket->send(packet);
 	}
 }
 
@@ -58,8 +52,6 @@ void Client::input(sf::Packet _packet)
 void Client::run()
 {
 	running = true;
-	std::thread input_thread([&] {input();});
-	input_thread.detach();
 
 	std::thread connection_thread([&] {
 		while (running)
