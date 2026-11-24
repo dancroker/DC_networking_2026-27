@@ -90,6 +90,11 @@ void Game::update(float dt)
         {
             std::string new_line = "Svr: " + responce;
             chat_text_lines.push_back(new_line);
+            if (chat_text_lines.size() > 9)
+            {
+                text_input_index++;
+            }
+
         }
     }
     if (server != nullptr)
@@ -99,15 +104,22 @@ void Game::update(float dt)
         {
             std::string new_line = "Cli: " + responce;
             chat_text_lines.push_back(new_line);
+            if (chat_text_lines.size() > 9)
+            {
+                text_input_index++;
+            }
         }
     }
 
     Chat_text->setString("");
-    for(std::string line : chat_text_lines)
+    for(int i = text_input_index; i< text_input_index + 9; i++)
     {
-        std::string new_line;
-        new_line = Chat_text->getString() + line + "\n";
-        Chat_text->setString(new_line);
+        if (i < chat_text_lines.size())
+        {
+            std::string new_line;
+            new_line = Chat_text->getString() + chat_text_lines[i] + "\n";
+            Chat_text->setString(new_line);
+        }
     }
 }
 
@@ -207,17 +219,39 @@ void Game::keyPressed(const sf::Event::KeyPressed* event)
             chat_text_lines.push_back(new_line);
             server->input(playerInput);
             setPlayerInput("");
+            if (chat_text_lines.size() > 9)
+            {
+                text_input_index++;
+            }
         }
         else if (client != nullptr)
         {
             std::string new_line = "Cli: " + playerInput;
             chat_text_lines.push_back(new_line);
             client->input(playerInput);
+            if (chat_text_lines.size() > 9)
+            {
+                text_input_index++;
+            }
             setPlayerInput("");
         }
         else
         {
             setPlayerInput("");
+        }
+    }
+    if (event->scancode == sf::Keyboard::Scancode::Up)
+    {
+        if (text_input_index > 0)
+        {
+            text_input_index--;
+        }
+    }
+    if (event->scancode == sf::Keyboard::Scancode::Down)
+    {
+        if(text_input_index+9 < chat_text_lines.size())
+        {
+            text_input_index++;
         }
     }
 }

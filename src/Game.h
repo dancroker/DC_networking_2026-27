@@ -50,6 +50,8 @@ class Game
 
 	std::string playerInput;
 
+	int text_input_index = 0;
+
 	enum
 	{
 		MENU,
